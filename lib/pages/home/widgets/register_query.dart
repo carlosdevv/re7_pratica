@@ -42,12 +42,14 @@ class _RegisterQueryDialogState extends State<RegisterQueryDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 25.wsz),
-      child: Material(
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      backgroundColor: Colors.transparent,
+      body: Material(
         color: Colors.transparent,
         child: Center(
           child: Container(
+            margin: const EdgeInsets.symmetric(horizontal: 24),
             height: MediaQuery.of(context).size.height * 0.75,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -55,140 +57,144 @@ class _RegisterQueryDialogState extends State<RegisterQueryDialog> {
             ),
             child: GestureDetector(
               onTap: (() => FocusManager.instance.primaryFocus?.unfocus()),
-              child: Form(
-                child: Column(
-                  children: [
-                    SingleChildScrollView(
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: 20.wsz, vertical: 30.wsz),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            DefaultTextStyle(
-                                style: TextStyle(
-                                  color: AppColors.black,
-                                  fontSize: 18.wsz,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                child: Text(widget.title)),
-                            DefaultTextStyle(
-                                style: TextStyle(
-                                  color: AppColors.text100,
-                                  fontSize: 12.wsz,
-                                  fontWeight: FontWeight.w700,
-                                ),
-                                child: const Text(
-                                    'Preencha todos os campos obrigatórios')),
-                            SizedBox(height: 25.hsz),
-                            widget.hasSubject
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      _selectAssuntoDropdown(),
-                                      SizedBox(height: 20.hsz),
-                                    ],
-                                  )
-                                : Container(),
-                            _typeQueryOptions(),
-                            SizedBox(height: 10.hsz),
-                            Obx(
-                              () => homeController.typeQuery.value == 1
-                                  ? InputWidget(
-                                      controller: homeController.consulta,
-                                      hintText: '',
-                                      label: 'Consulta *',
-                                      readOnly: false,
-                                      keyboardType: TextInputType.text,
-                                      textInputAction: TextInputAction.next,
-                                      maxLines: 5,
-                                      padHorizontal: 18.hsz,
-                                      padVertical: 16.hsz,
-                                    )
-                                  : _audioTypeContainer(),
-                            ),
-                            widget.hasWordKey
-                                ? Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: 20.hsz),
-                                      InputWidget(
-                                        controller: homeController.palavraChave,
-                                        hintText: '',
-                                        label: 'Palavras Chaves',
-                                        readOnly: false,
-                                        hasIcon: true,
-                                        padHorizontal: 18.hsz,
-                                        padVertical: 16.hsz,
-                                        icon: const Icon(
-                                          Icons.add_circle_outlined,
-                                          color: AppColors.primary,
-                                        ),
-                                        onPressedIcon: () {
-                                          FocusScopeNode currentFocus =
-                                              FocusScope.of(context);
-
-                                          if (!currentFocus.hasPrimaryFocus) {
-                                            currentFocus.unfocus();
-                                          }
-                                          homeController.addChip();
-                                          currentFocus.unfocus();
-                                        },
-                                      ),
-                                      buildChips(),
-                                    ],
-                                  )
-                                : Container(),
-                          ],
+              child: Column(
+                children: [
+                  buildContentModal(context),
+                  Container(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: 20.wsz, vertical: 15.wsz),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: const BoxDecoration(
+                        color: Color(0xfff9f9fb),
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        )),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        _button(
+                          text: 'Cancelar',
+                          background: Colors.white,
+                          color: AppColors.black,
+                          onTap: () {
+                            Get.back();
+                          },
                         ),
-                      ),
+                        SizedBox(width: 8.wsz),
+                        _button(
+                          text: 'Enviar',
+                          hasGradient: true,
+                          color: AppColors.white,
+                          onTap: widget.isComplementConsult
+                              ? widget.onTap
+                              : () async {
+                                  await homeController.registerConsult();
+                                  if (homeController.isSuccessConsult.value) {
+                                    await _pickFile();
+                                  }
+                                },
+                        ),
+                      ],
                     ),
-                    const Spacer(),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 20.wsz, vertical: 15.wsz),
-                      width: MediaQuery.of(context).size.width,
-                      decoration: const BoxDecoration(
-                          color: Color(0xfff9f9fb),
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(20),
-                            bottomRight: Radius.circular(20),
-                          )),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          _button(
-                            text: 'Cancelar',
-                            background: Colors.white,
-                            color: AppColors.black,
-                            onTap: () {
-                              Get.back();
-                            },
-                          ),
-                          SizedBox(width: 8.wsz),
-                          _button(
-                            text: 'Enviar',
-                            hasGradient: true,
-                            color: AppColors.white,
-                            onTap: widget.isComplementConsult
-                                ? widget.onTap
-                                : () async {
-                                    await homeController.registerConsult();
-                                    if (homeController.isSuccessConsult.value) {
-                                      await _pickFile();
-                                    }
-                                  },
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
+                  )
+                ],
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildContentModal(BuildContext context) {
+    return Expanded(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.only(
+            left: 20.wsz,
+            right: 20.wsz,
+            top: 30.wsz,
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              DefaultTextStyle(
+                  style: TextStyle(
+                    color: AppColors.black,
+                    fontSize: 18.wsz,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  child: Text(widget.title)),
+              DefaultTextStyle(
+                  style: TextStyle(
+                    color: AppColors.text100,
+                    fontSize: 12.wsz,
+                    fontWeight: FontWeight.w700,
+                  ),
+                  child: const Text('Preencha todos os campos obrigatórios')),
+              SizedBox(height: 25.hsz),
+              widget.hasSubject
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _selectAssuntoDropdown(),
+                        SizedBox(height: 20.hsz),
+                      ],
+                    )
+                  : Container(),
+              _typeQueryOptions(),
+              SizedBox(height: 10.hsz),
+              Obx(
+                () => homeController.typeQuery.value == 1
+                    ? InputWidget(
+                        controller: homeController.consulta,
+                        hintText: '',
+                        label: 'Consulta *',
+                        readOnly: false,
+                        keyboardType: TextInputType.text,
+                        textInputAction: TextInputAction.next,
+                        maxLines: 5,
+                        padHorizontal: 18.hsz,
+                        padVertical: 16.hsz,
+                      )
+                    : _audioTypeContainer(),
+              ),
+              widget.hasWordKey
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 20.hsz),
+                        InputWidget(
+                          controller: homeController.palavraChave,
+                          hintText: '',
+                          label: 'Palavras Chaves',
+                          readOnly: false,
+                          hasIcon: true,
+                          padHorizontal: 18.hsz,
+                          padVertical: 16.hsz,
+                          icon: const Icon(
+                            Icons.add_circle_outlined,
+                            color: AppColors.primary,
+                          ),
+                          onPressedIcon: () {
+                            FocusScopeNode currentFocus =
+                                FocusScope.of(context);
+
+                            if (!currentFocus.hasPrimaryFocus) {
+                              currentFocus.unfocus();
+                            }
+                            homeController.addChip();
+                            currentFocus.unfocus();
+                          },
+                        ),
+                        buildChips(),
+                      ],
+                    )
+                  : Container(),
+            ],
           ),
         ),
       ),

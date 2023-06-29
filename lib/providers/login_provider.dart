@@ -1,5 +1,5 @@
-import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:re7_pratica/models/environment.dart';
 
 class LoginProvider extends GetConnect {

@@ -101,6 +101,7 @@ class ConsultBottomSheet extends StatelessWidget {
                     title: 'Complementar Consulta',
                     icon: Icons.control_point_duplicate_outlined,
                     onTap: () async {
+                      Get.back();
                       Get.dialog(RegisterQueryDialog(
                         title: 'Complementar Consulta',
                         hasSubject: false,

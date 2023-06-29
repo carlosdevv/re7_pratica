@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "re7_pratica" "\0"
+            VALUE "FileDescription", "Re7 Prática" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "re7_pratica" "\0"
+            VALUE "InternalName", "Re7 Prática" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "re7_pratica.exe" "\0"
-            VALUE "ProductName", "re7_pratica" "\0"
+            VALUE "ProductName", "Re7 Prática" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
